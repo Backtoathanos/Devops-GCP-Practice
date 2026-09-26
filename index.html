@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DevOps Practice — ProjectOne</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b1016;
+      --rail: #10161e;
+      --card: #151c26;
+      --card-2: #1b2430;
+      --line: #2a3646;
+      --text: #e7eef6;
+      --muted: #8ea0b5;
+      --faint: #5d7086;
+      --teal: #3ddec0;
+      --teal-dim: rgba(61, 222, 192, 0.14);
+      --amber: #f0b429;
+      --amber-dim: rgba(240, 180, 41, 0.14);
+      --blue: #7eb6ff;
+      --blue-dim: rgba(126, 182, 255, 0.14);
+      --rose: #ff8b8b;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Manrope, Segoe UI, sans-serif;
+      background:
+        radial-gradient(900px 420px at 12% -10%, rgba(61, 222, 192, 0.08), transparent 55%),
+        radial-gradient(700px 380px at 100% 0%, rgba(126, 182, 255, 0.08), transparent 50%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    button, select { font-family: inherit; }
+    button { cursor: pointer; }
+
+    .app {
+      display: grid;
+      grid-template-columns: 248px 1fr;
+      min-height: 100%;
+    }
+
+    .rail {
+      background: var(--rail);
+      border-right: 1px solid var(--line);
+      padding: 22px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 4px 8px 8px;
+    }
+    .mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(145deg, #3ddec0, #2a8fbe);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      color: #062018;
+      letter-spacing: -0.04em;
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+    }
+    .brand p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .nav { display: flex; flex-direction: column; gap: 4px; }
+    .nav button {
+      text-align: left;
+      background: transparent;
+      color: var(--muted);
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .nav button[aria-current="page"] {
+      background: var(--card-2);
+      color: var(--text);
+    }
+    .nav button:hover { color: var(--text); }
+
+    .rail-foot {
+      margin-top: auto;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #121922;
+    }
+    .rail-foot span {
+      display: block;
+      color: var(--faint);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .rail-foot strong { display: block; margin-top: 4px; font-size: 13px; }
+    .rail-foot em {
+      font-style: normal;
+      color: var(--teal);
+      font-size: 12px;
+    }
+
+    .main { padding: 22px 28px 40px; min-width: 0; }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-end;
+      margin-bottom: 22px;
+    }
+    .eyebrow {
+      margin: 0 0 6px;
+      color: var(--teal);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    h2 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -0.04em;
+    }
+    .sub {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .chip {
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: var(--muted);
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+    }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .phase {
+      text-align: left;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px 14px 12px;
+      color: inherit;
+      position: relative;
+      min-height: 118px;
+    }
+    .phase:hover { border-color: #3d5168; }
+    .phase.selected {
+      border-color: var(--teal);
+      box-shadow: inset 0 0 0 1px var(--teal);
+    }
+    .phase .kicker {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--faint);
+      font-weight: 700;
+    }
+    .phase h3 { margin: 8px 0 4px; font-size: 16px; letter-spacing: -0.02em; }
+    .phase p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.4; }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+      background: var(--teal);
+    }
+    .dot.wait { background: var(--amber); }
+    .dot.idle { background: var(--faint); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr;
+      gap: 16px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .panel header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .panel h3 { margin: 0; font-size: 15px; }
+    .panel header span { color: var(--muted); font-size: 12px; }
+
+    .run {
+      display: grid;
+      gap: 0;
+    }
+    .step {
+      display: grid;
+      grid-template-columns: 22px 1fr auto;
+      gap: 12px;
+      align-items: start;
+      padding: 10px 4px;
+    }
+    .step + .step { border-top: 1px solid #223040; }
+    .rail-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-top: 4px;
+      background: var(--teal);
+      box-shadow: 0 0 0 4px var(--teal-dim);
+    }
+    .rail-dot.wait {
+      background: var(--amber);
+      box-shadow: 0 0 0 4px var(--amber-dim);
+    }
+    .step strong { display: block; font-size: 14px; }
+    .step small { color: var(--muted); font-size: 12px; }
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: var(--teal-dim);
+      color: var(--teal);
+    }
+    .badge.wait { background: var(--amber-dim); color: var(--amber); }
+    .badge.info { background: var(--blue-dim); color: var(--blue); }
+
+    .inspector h4 { margin: 0 0 6px; font-size: 18px; letter-spacing: -0.03em; }
+    .inspector .lead { margin: 0 0 14px; color: var(--muted); font-size: 14px; line-height: 1.5; }
+    dl { margin: 0; display: grid; gap: 10px; }
+    dl div {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #223040;
+      font-size: 13px;
+    }
+    dt { color: var(--muted); }
+    dd { margin: 0; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12px; }
+
+    .envs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .env {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      min-height: 220px;
+    }
+    .env header { display: flex; justify-content: space-between; align-items: center; }
+    .env h3 { margin: 0; font-size: 16px; }
+    .version {
+      margin: 18px 0 6px;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 22px;
+      letter-spacing: -0.04em;
+    }
+    .env p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .env ul { margin: 16px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+    .env li {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--muted);
+      border-top: 1px solid #223040;
+      padding-top: 8px;
+    }
+    .env li b { color: var(--text); font-weight: 600; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th {
+      text-align: left;
+      color: var(--faint);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0 10px 10px;
+    }
+    td {
+      padding: 12px 10px;
+      border-top: 1px solid #223040;
+      vertical-align: middle;
+    }
+    td.mono, .mono {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 12px;
+    }
+
+    .note {
+      margin-top: 16px;
+      color: var(--faint);
+      font-size: 12px;
+    }
+
+    @media (max-width: 1080px) {
+      .app { grid-template-columns: 1fr; }
+      .rail { position: relative; height: auto; }
+      .flow, .layout, .envs { grid-template-columns: 1fr; }
+      .top { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="rail">
+      <div class="brand">
+        <div class="mark">DP</div>
+        <div>
+          <h1>DevOps Practice</h1>
+          <p>ProjectOne</p>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Platform">
+        <button type="button" data-view="journey" aria-current="page">Practice path</button>
+        <button type="button" data-view="environments">Environments</button>
+        <button type="button" data-view="releases">Releases</button>
+      </nav>
+      <div class="rail-foot">
+        <span>Current release</span>
+        <strong>v1.4.2</strong>
+        <em>Staging promoted · prod waiting</em>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="top">
+        <div>
+          <p class="eyebrow">Development to deployment</p>
+          <h2 id="title">Practice path</h2>
+          <p class="sub" id="subtitle">How a change moves from a developer branch to production.</p>
+        </div>
+        <div class="meta">
+          <span class="chip">main</span>
+          <span class="chip">run #184</span>
+          <span class="chip">checkout-retry</span>
+        </div>
+      </header>
+
+      <section class="view active" id="journey" aria-label="Practice path">
+        <div class="flow" id="phases"></div>
+        <div class="layout">
+          <article class="panel">
+            <header>
+              <h3>Pipeline run #184</h3>
+              <span>Started 14 min ago · actor: a.khan</span>
+            </header>
+            <div class="run" id="steps"></div>
+          </article>
+          <article class="panel inspector" id="inspector"></article>
+        </div>
+        <p class="note">View only. Statuses are sample data for the practice walkthrough.</p>
+      </section>
+
+      <section class="view" id="environments" aria-label="Environments">
+        <div class="envs" id="env-board"></div>
+        <p class="note">Each environment keeps the last successful deployment. Production requires a manual gate.</p>
+      </section>
+
+      <section class="view" id="releases" aria-label="Releases">
+        <article class="panel">
+          <header>
+            <h3>Release history</h3>
+            <span>Same artifact, different environments</span>
+          </header>
+          <table>
+            <thead>
+              <tr>
+                <th>Version</th>
+                <th>Commit</th>
+                <th>Built</th>
+                <th>Dev</th>
+                <th>Staging</th>
+                <th>Production</th>
+              </tr>
+            </thead>
+            <tbody id="releases-body"></tbody>
+          </table>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const phases = [
+      {
+        id: "develop",
+        index: "01",
+        name: "Develop",
+        summary: "Branch, commit, review, merge.",
+        status: "done",
+        detail: "Work starts on a short-lived branch. A pull request is reviewed, checks pass, and the change lands on main.",
+        facts: [
+          ["Branch", "feature/checkout-retry"],
+          ["Pull request", "#42 merged"],
+          ["Commits", "3"],
+          ["Review", "Approved by m.rao"]
+        ]
+      },
+      {
+        id: "verify",
+        index: "02",
+        name: "Build & test",
+        summary: "Compile, test, scan, package.",
+        status: "done",
+        detail: "Main triggers continuous integration. The app is built, tested, scanned, and stored as one versioned artifact.",
+        facts: [
+          ["Image", "projectone:1.4.2"],
+          ["Tests", "128 passed"],
+          ["Coverage", "86%"],
+          ["Scan", "No critical findings"]
+        ]
+      },
+      {
+        id: "release",
+        index: "03",
+        name: "Release",
+        summary: "Tag the artifact once.",
+        status: "done",
+        detail: "The same build is tagged and promoted. Later environments do not rebuild from source.",
+        facts: [
+          ["Tag", "v1.4.2"],
+          ["Artifact", "registry/projectone"],
+          ["Digest", "sha256:9c1e…a4"],
+          ["Policy", "Immutable tag"]
+        ]
+      },
+      {
+        id: "deploy",
+        index: "04",
+        name: "Deploy",
+        summary: "Dev, then staging, then prod.",
+        status: "wait",
+        detail: "Deployment walks environments in order. Development and staging are live. Production is waiting on approval.",
+        facts: [
+          ["Development", "v1.4.2 live"],
+          ["Staging", "v1.4.2 live"],
+          ["Production", "v1.4.0 holding"],
+          ["Gate", "Awaiting release owner"]
+        ]
+      }
+    ];
+
+    const steps = [
+      ["Commit on feature branch", "a.khan · 3 files", "done", "Develop"],
+      ["Pull request review", "Approved · checks green", "done", "Develop"],
+      ["Merge to main", "Squash merge · run #184", "done", "Develop"],
+      ["Build container image", "projectone:1.4.2", "done", "Build"],
+      ["Unit and integration tests", "128 passed · 4m 12s", "done", "Test"],
+      ["Publish release", "Tag v1.4.2", "done", "Release"],
+      ["Deploy development", "Auto on main", "done", "Deploy"],
+      ["Deploy staging", "Promoted from dev", "done", "Deploy"],
+      ["Deploy production", "Manual approval open", "wait", "Deploy"]
+    ];
+
+    const environments = [
+      {
+        name: "Development",
+        version: "v1.4.2",
+        state: "Healthy",
+        tone: "done",
+        blurb: "Updates automatically when main is green.",
+        rows: [["Strategy", "Auto"], ["Replicas", "1"], ["Updated", "12 min ago"]]
+      },
+      {
+        name: "Staging",
+        version: "v1.4.2",
+        state: "Healthy",
+        tone: "done",
+        blurb: "Same artifact as development, used for acceptance.",
+        rows: [["Strategy", "Promote"], ["Replicas", "2"], ["Updated", "6 min ago"]]
+      },
+      {
+        name: "Production",
+        version: "v1.4.0",
+        state: "Holding",
+        tone: "wait",
+        blurb: "Stays on the last approved release until the gate is signed.",
+        rows: [["Strategy", "Manual"], ["Replicas", "3"], ["Updated", "2 days ago"]]
+      }
+    ];
+
+    const releases = [
+      ["v1.4.2", "c4e91ab", "Today 15:58", "Live", "Live", "Waiting"],
+      ["v1.4.1", "91ab220", "Yesterday", "Retired", "Retired", "Skipped"],
+      ["v1.4.0", "77c10de", "2 days ago", "Retired", "Retired", "Live"],
+      ["v1.3.9", "b18aa04", "6 days ago", "Retired", "Retired", "Rolled back"]
+    ];
+
+    const titles = {
+      journey: ["Practice path", "How a change moves from a developer branch to production."],
+      environments: ["Environments", "Where the released build is running right now."],
+      releases: ["Releases", "Versions that moved through the practice path."]
+    };
+
+    const phaseRoot = document.getElementById("phases");
+    const stepRoot = document.getElementById("steps");
+    const inspector = document.getElementById("inspector");
+    let selected = "deploy";
+
+    function badge(tone, label) {
+      const cls = tone === "wait" ? "badge wait" : tone === "info" ? "badge info" : "badge";
+      return `<span class="${cls}">${label}</span>`;
+    }
+
+    function renderPhases() {
+      phaseRoot.innerHTML = phases.map((phase) => `
+        <button type="button" class="phase${phase.id === selected ? " selected" : ""}" data-phase="${phase.id}">
+          <div class="kicker"><span class="dot${phase.status === "wait" ? " wait" : ""}"></span>${phase.index}</div>
+          <h3>${phase.name}</h3>
+          <p>${phase.summary}</p>
+        </button>
+      `).join("");
+    }
+
+    function renderInspector() {
+      const phase = phases.find((item) => item.id === selected);
+      inspector.innerHTML = `
+        <header><h3>Stage detail</h3><span>${phase.index}</span></header>
+        <h4>${phase.name}</h4>
+        <p class="lead">${phase.detail}</p>
+        <dl>
+          ${phase.facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}
+        </dl>
+      `;
+    }
+
+    function renderSteps() {
+      stepRoot.innerHTML = steps.map(([title, meta, tone, label]) => `
+        <div class="step">
+          <span class="rail-dot${tone === "wait" ? " wait" : ""}"></span>
+          <div><strong>${title}</strong><small>${meta}</small></div>
+          ${badge(tone === "wait" ? "wait" : "done", tone === "wait" ? "Waiting" : label)}
+        </div>
+      `).join("");
+    }
+
+    document.getElementById("env-board").innerHTML = environments.map((env) => `
+      <article class="env">
+        <header>
+          <h3>${env.name}</h3>
+          ${badge(env.tone === "wait" ? "wait" : "done", env.state)}
+        </header>
+        <div class="version">${env.version}</div>
+        <p>${env.blurb}</p>
+        <ul>
+          ${env.rows.map(([k, v]) => `<li><span>${k}</span><b>${v}</b></li>`).join("")}
+        </ul>
+      </article>
+    `).join("");
+
+    document.getElementById("releases-body").innerHTML = releases.map((row) => `
+      <tr>
+        <td class="mono">${row[0]}</td>
+        <td class="mono">${row[1]}</td>
+        <td>${row[2]}</td>
+        <td>${row[3]}</td>
+        <td>${row[4]}</td>
+        <td>${row[5]}</td>
+      </tr>
+    `).join("");
+
+    phaseRoot.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-phase]");
+      if (!button) return;
+      selected = button.dataset.phase;
+      renderPhases();
+      renderInspector();
+    });
+
+    document.querySelectorAll(".nav button").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".nav button").forEach((item) => item.removeAttribute("aria-current"));
+        button.setAttribute("aria-current", "page");
+        document.querySelectorAll(".view").forEach((view) => view.classList.remove("active"));
+        document.getElementById(button.dataset.view).classList.add("active");
+        const [title, subtitle] = titles[button.dataset.view];
+        document.getElementById("title").textContent = title;
+        document.getElementById("subtitle").textContent = subtitle;
+      });
+    });
+
+    renderPhases();
+    renderInspector();
+    renderSteps();
+  </script>
+</body>
+</html>
