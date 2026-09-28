@@ -1,0 +1,43 @@
+name: Deploy hello-app
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  verify:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t hello-app:test .
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: project-0a3daf12-53cb-46ca-9df
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/985454282294/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+          service_account: github-cicd@project-0a3daf12-53cb-46ca-9df.iam.gserviceaccount.com
+
+      - uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Submit Cloud Build
+        run: |
+          TAG="${GITHUB_SHA:0:7}"
+          gcloud builds submit --project="$PROJECT_ID" --config=cloudbuild.yaml --substitutions=_IMAGE_TAG="$TAG" .

@@ -1,0 +1,11 @@
+.git
+.github
+.terraform
+terraform/.terraform
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/.terraform.lock.hcl
+**/.terraform/**
+*.tfstate
+*.tfstate.*
+Dockerfile.dockerfile
