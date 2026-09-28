@@ -48,14 +48,23 @@ resource "google_service_account_iam_member" "github_wif" {
 
 resource "google_project_iam_member" "cicd_roles" {
   for_each = toset([
+    "roles/serviceusage.serviceUsageConsumer",
     "roles/cloudbuild.builds.editor",
     "roles/storage.objectAdmin",
-    "roles/artifactregistry.reader",
+    "roles/artifactregistry.writer",
+    "roles/run.admin",
+    "roles/iam.serviceAccountUser",
   ])
 
   project = var.project_id
   role    = each.value
   member  = "serviceAccount:${google_service_account.cicd.email}"
+}
+
+resource "google_storage_bucket_iam_member" "cicd_cloudbuild_bucket" {
+  bucket = "${var.project_id}_cloudbuild"
+  role   = "roles/storage.admin"
+  member = "serviceAccount:${google_service_account.cicd.email}"
 }
 
 locals {
