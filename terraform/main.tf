@@ -7,6 +7,7 @@ locals {
     "sts.googleapis.com",
     "cloudbuild.googleapis.com",
     "cloudresourcemanager.googleapis.com",
+    "container.googleapis.com",
   ]
 }
 

@@ -22,3 +22,18 @@ output "cicd_service_account" {
   description = "Service account GitHub Actions impersonates."
   value       = google_service_account.cicd.email
 }
+
+output "gke_cluster" {
+  description = "GKE cluster name."
+  value       = google_container_cluster.practice.name
+}
+
+output "gke_location" {
+  description = "Zone of the practice GKE cluster."
+  value       = google_container_cluster.practice.location
+}
+
+output "gke_get_credentials" {
+  description = "Command that points kubectl at the practice cluster."
+  value       = "gcloud container clusters get-credentials ${google_container_cluster.practice.name} --zone ${google_container_cluster.practice.location} --project ${var.project_id}"
+}
